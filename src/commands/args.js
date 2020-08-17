@@ -158,17 +158,9 @@ module.exports = function(data)
       id = data.message.channel.guild.id;
    }
 
-   db.getServerInfo(id, function(err, server)
+   db.getServerInfo(id, function(server)
    {
-      if (err)
-      {
-         logger("error", err);
-      }
-
-      else
-      {
-         output.server = server;
-      }
+      output.server = server;
 
       //
       // Get default language of server/bot
@@ -240,7 +232,8 @@ module.exports = function(data)
 
       output.main = output.main.toLowerCase();
 
-      if (cmdMap.hasOwnProperty(output.main))
+      //if (cmdMap.hasOwnProperty(output.main))
+      if (Object.prototype.hasOwnProperty.call(cmdMap,output.main))
       {
          cmdMap[output.main](data);
       }

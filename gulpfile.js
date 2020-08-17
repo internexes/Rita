@@ -1,30 +1,52 @@
 const gulp = require("gulp");
 const eslint = require("gulp-eslint");
-const _watch = require("gulp-watch");
+const watch = require("gulp-watch");
 const lec = require("gulp-line-ending-corrector");
+const coveralls = require('@kollavarsham/gulp-coveralls');
 //const uglify = require('gulp-uglify-es').default;
 
-gulp.task("lint", () =>
+//tasks
+
+function lint()
 {
+   //execute
    return gulp.src(["src/**/*.js"])
       .pipe(lec())
       .pipe(eslint())
       .pipe(eslint.format())
       .pipe(eslint.failAfterError());
-});
+}
 
-gulp.task("compress", function ()
+function compress()
 {
+   // execute
    return gulp.src("src/**/*.js")
    //.pipe(uglify())
-      .pipe(gulp.dest("build/"));
-});
+      .pipe(gulp.dest("build"));
+}
 
-gulp.task("default", ["lint", "compress"]);
-
-gulp.task("build", ["lint", "compress"]);
-
-gulp.task("watch", function()
+function GulpWatch()
 {
-   gulp.watch("src/**/*.js", ["default"]);
-});
+   gulp.watch("src/**/*.js", gulp.series("default"));
+}
+
+//function coverage()
+//{
+//gulp.src('coverage/lcov.info')
+//  .pipe(coveralls());
+//}
+
+gulp.task("compress", compress);
+gulp.task("lint", lint);
+gulp.task("watch", GulpWatch);
+gulp.task("default", gulp.parallel(lint, compress));
+gulp.task("build", gulp.parallel(lint, compress));
+
+//gulp.task("coveralls", function (done) {
+//  if (!process.env.CI) {
+//    done();
+//  } else {
+//    return gulp.src(path.join(__dirname, 'coverage/lcov.info'))
+//      .pipe(coveralls());
+//  }
+//});
